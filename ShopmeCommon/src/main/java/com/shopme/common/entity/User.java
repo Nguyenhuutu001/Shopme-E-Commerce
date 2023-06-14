@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name="users")
@@ -28,10 +29,10 @@ public class User {
 	private String password;
 	
 	@Column(name="first_name", length = 45, nullable = false)
-	private String firstname;
+	private String firstName;
 	
 	@Column(name="last_name", length = 45, nullable = false)
-	private String lastname;
+	private String lastName;
 	
 	@Column(length = 64)
 	private String photos;
@@ -40,7 +41,7 @@ public class User {
 	
 	@ManyToMany
 	@JoinTable(
-			name = "user_roles",
+			name = "users_roles",
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id")
 			)
@@ -56,8 +57,8 @@ public class User {
 	public User(String email, String password, String firstname, String lastname) {
 		this.email = email;
 		this.password = password;
-		this.firstname = firstname;
-		this.lastname = lastname;
+		this.firstName = firstname;
+		this.lastName = lastname;
 	}
 	
 	
@@ -89,19 +90,19 @@ public class User {
 	}
 
 	public String getFirstname() {
-		return firstname;
+		return firstName;
 	}
 
 	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+		this.firstName = firstname;
 	}
 
 	public String getLastname() {
-		return lastname;
+		return lastName;
 	}
 
 	public void setLastname(String lastname) {
-		this.lastname = lastname;
+		this.lastName = lastname;
 	}
 
 	public String getPhotos() {
@@ -136,9 +137,19 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", firstname=" + firstname + ", lastname=" + lastname
+		return "User [id=" + id + ", email=" + email + ", firstname=" + firstName + ", lastname=" + lastName
 				+ ", roles=" + roles + "]";
 	}
 	
+	@Transient
+	public String getPhotosImagePath() {
+		if(id == null || photos ==  null) return "/images/default-user.jpg";
+		return "/user-photos/" + this.id + "/" + this.photos;
+	}
+	
+	@Transient
+	public String getFullName() {
+		return firstName + " " + lastName;
+	}
 	
 }
